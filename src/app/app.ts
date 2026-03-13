@@ -100,7 +100,7 @@ import { CommonModule } from '@angular/common';
 
 <p>Average rating Drama before 2000: {{ DramaMovies | number: '1.2-2'}}</p>
 
-<p>Total genres from movies rating > 8.8: {{ genreHighlights }}</p>
+<p>genre highlights >{{ genreHighlights }}</p>
 
 <p>Contains Sci-Fi movie: {{ SciFimovies }}</p>
 
@@ -110,7 +110,7 @@ import { CommonModule } from '@angular/common';
 
 <p>Has movie rating above 9: {{ hasAboveNine }}</p>
 
-<p>All movies rating above 8: {{ allAboveEight }}</p>
+<p>All Nolan movies rating above 8.5: {{ allAboveEight }}</p>
 
 `,
 
@@ -140,7 +140,7 @@ export class App {
    
     allAbove7 = this.movies.every(movie => movie.rating > 7);
    
-    averageRating = this.movies.reduce((sum, movie) => sum = movie.rating, 0) / this.movies.length;
+    averageRating = this.movies.reduce((sum, movie) => sum + movie.rating, 0) / this.movies.length;
     
     titleRating = this.movies.map(movie => ({
 
@@ -178,14 +178,18 @@ export class App {
     .sort((a, b) => a.year - b.year)
     .map(movie => movie.title);
 
-    genreHighlights = this.movies 
+    genreHighlights = new Set(
+    this.movies 
     .filter(movie => movie.rating >8.8)
-    .map(movie => movie.genre)
-    .flat()
-    .length;
-
+    .flatMap(movie => movie.genre)
+    ).size;
+    
     hasAboveNine = this.movies.some(movie => movie.rating > 9);
-    allAboveEight = this.movies.every(movie => movie.rating > 8);
 
-    results = this.movies; // tijdelijke test
+    allAboveEight = this.movies
+      .filter(movie => movie.director === "Christopher Nolan")
+      .every(movie => movie.rating > 8.5);
+    
+
+    
 }
